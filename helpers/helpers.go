@@ -13,18 +13,14 @@ func ObjectKeys(i interface{}) (r []string, err error) {
 		err = errors.New("this function only accepts struct types or pointer-to-struct types")
 		return r, err
 	}
-
 	for i := 0; i < v.NumField(); i++ {
 		ft := v.Type().Field(i)
 		fv := v.Field(i)
-
 		if fv.Kind() == reflect.Ptr {
 			fv = fv.Elem()
 		}
-
 		r = append(r, ft.Name)
 	}
-
 	return r, err
 }
 
@@ -32,31 +28,23 @@ func ObjectKeys(i interface{}) (r []string, err error) {
 // containing all the key names for the given struct and it's nested structs
 func ObjectKeysFlatten(i interface{}) (r []string, err error) {
 	v := reflect.Indirect(reflect.ValueOf(i))
-	k := v.Kind()
-
-	if k != reflect.Struct {
+	if v.Kind() != reflect.Struct {
 		err = errors.New("this function only accepts struct types or pointer-to-struct types")
 		return r, err
 	}
-
 	for i := 0; i < v.NumField(); i++ {
 		ft := v.Type().Field(i)
-
 		fv := v.Field(i)
-
 		if fv.Kind() == reflect.Ptr {
 			fv = fv.Elem()
 		}
-
 		r = append(r, ft.Name)
-
 		if fv.Kind() == reflect.Struct {
 			fi := fv.Interface()
 			sl, _ := ObjectKeysFlatten(fi)
 			r = append(r, sl...)
 		}
 	}
-
 	return r, err
 }
 
@@ -108,13 +96,11 @@ func Set(i interface{}, k string, val interface{}) (err error) {
 
 // GetVals takes an interface and returns every value from that interface
 func GetVals(i interface{}) (r []interface{}, err error) {
-
 	// get the field names
 	names, err := ObjectKeys(i)
 	if err != nil {
 		return []interface{}{}, err
 	}
-
 	if len(names) > 0 {
 		for _, fn := range names {
 			val, err := Get(i, fn)
@@ -124,6 +110,5 @@ func GetVals(i interface{}) (r []interface{}, err error) {
 			r = append(r, val)
 		}
 	}
-
 	return r, err
 }
