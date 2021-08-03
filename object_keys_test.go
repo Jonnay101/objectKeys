@@ -1,4 +1,4 @@
-package helpers
+package objectkeys
 
 import (
 	"errors"
@@ -78,6 +78,15 @@ func TestObjectKeys(t *testing.T) {
 
 		assert.Equal(t, test.Errored, err, test.Msg)
 		assert.Equal(t, test.Expect, res, test.Msg)
+	}
+}
+
+func BenchmarkObjectKeys(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		_, err := ObjectKeys(Thing{})
+		if err != nil {
+			b.Error(err)
+		}
 	}
 }
 
